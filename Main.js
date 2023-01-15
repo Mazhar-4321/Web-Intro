@@ -1,5 +1,6 @@
 console.log("Welcome To Address Book Program")
 let personObject = null;
+let addressBookArray=[];
 class Person {
     constructor(firstName, lastName, city, state, zip, phoneNumber, email, address) {
         this.firstName = firstName
@@ -22,7 +23,8 @@ let phoneNumber = process.argv[8];
 let email = process.argv[9];
 personObject = createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address);
 if (validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address)) {
-    console.log("valid contact details")
+    console.log("valid contact details");
+    addressBookArray.push(personObject);
 } else {
     console.log("Invalid Contact Details")
 }
