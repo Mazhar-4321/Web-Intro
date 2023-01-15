@@ -1,6 +1,6 @@
 console.log("Welcome To Address Book Program")
 let personObject = null;
-let addressBookArray = [];
+let addressBookMap = new Map();
 class Person {
     constructor(firstName, lastName, city, state, zip, phoneNumber, email, address) {
         this.firstName = firstName
@@ -21,13 +21,19 @@ let zip = process.argv[6];
 let phoneNumber = process.argv[7];
 let email = process.argv[8];
 let address = process.argv[9];
+let addressBookName = process.argv[10];
 personObject = createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address);
 if (validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address)) {
     console.log("valid contact details");
-    addressBookArray.push(personObject);
+    let contactsArray = []
+    contactsArray.push(personObject)
+    addressBookMap.get(addressBookName) == null ? addressBookMap.set(addressBookName, contactsArray) :
+        addressBookMap.set(addressBookName, addressBookMap.get(addressBookName).push(personObject))
+
 } else {
     console.log("Invalid Contact Details")
 }
+getCountOfContactsInAddressBook("add1")
 editContact("Mazhar", "Ali", "Hyderabad", state, zip, phoneNumber, email, address)
 deleteContact("Mazhar", "Ali")
 function createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address) {
@@ -44,19 +50,33 @@ function validateContact(firstName, lastName, city, state, zip, phoneNumber, ema
                                 address.match(/[A-Z][a-z]{2}/) == null ? false : true;
 }
 function editContact(firstName, lastName, city, state, zip, phoneNumber, email, address) {
-    let contact = addressBookArray.filter(e => e.firstName === firstName && e.lastName === lastName)
-    if (contact.length == 0) {
+    let contact = null;
+    for (const [key, value] of addressBookMap.entries()) {
+        contact = value.filter(e => e.firstName === firstName && e.lastName === lastName)[0]
+        if (contact != null) {
+            break;
+        }
+    }
+    if (contact == undefined) {
         console.log("Contact Doesn't Exists")
     } else {
+        contact.firstName = firstName
+        contact.lastName = lastName
         contact.city = city
         contact.state = state
         contact.zip = zip
-        contact.phoneNumber = phoneNumber
-        contact.email = email
         contact.address = address
+        contact.phoneNumber = phoneNumber
     }
 }
-function deleteContact(firstName,lastName){
-    let contact=addressBookArray.filter(e => e.firstName != firstName && e.lastName != lastName);
-    addressBookArray=contact;
+function deleteContact(firstName, lastName) {
+    let contact = null;
+    for (const [key, value] of addressBookMap.entries()) {
+        let value1 = value.filter(e => e.firstName !== firstName && e.lastName !== lastName)
+        if (value1 != undefined)
+            addressBookMap.set(key, value1);
+    }
+}
+function getCountOfContactsInAddressBook(addressBookName) {
+    return addressBookMap.get(addressBookName).length
 }
