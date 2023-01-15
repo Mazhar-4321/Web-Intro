@@ -29,6 +29,7 @@ if (validateContact(firstName, lastName, city, state, zip, phoneNumber, email, a
     console.log("Invalid Contact Details")
 }
 editContact("Mazhar", "Ali", "Hyderabad", state, zip, phoneNumber, email, address)
+deleteContact("Mazhar", "Ali")
 function createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address) {
     return new Person(firstName, lastName, city, state, zip, phoneNumber, email, address);
 }
@@ -53,6 +54,9 @@ function editContact(firstName, lastName, city, state, zip, phoneNumber, email, 
         contact.phoneNumber = phoneNumber
         contact.email = email
         contact.address = address
-        console.log(addressBookArray)
     }
+}
+function deleteContact(firstName,lastName){
+    let contact=addressBookArray.filter(e => e.firstName != firstName && e.lastName != lastName);
+    addressBookArray=contact;
 }
