@@ -23,7 +23,7 @@ let email = process.argv[8];
 let address = process.argv[9];
 let addressBookName = process.argv[10];
 personObject = createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address);
-if (validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address)) {
+if (personObject == undefined && validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address)) {
     console.log("valid contact details");
     let contactsArray = []
     contactsArray.push(personObject)
@@ -37,7 +37,8 @@ getCountOfContactsInAddressBook("add1")
 editContact("Mazhar", "Ali", "Hyderabad", state, zip, phoneNumber, email, address)
 deleteContact("Mazhar", "Ali")
 function createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address) {
-    return new Person(firstName, lastName, city, state, zip, phoneNumber, email, address);
+    return checkIfContactExists(firstName, lastName) ? null :
+        new Person(firstName, lastName, city, state, zip, phoneNumber, email, address);
 }
 function validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address) {
     return firstName.match(/^[A-Z][a-zA-Z0-9~!@#$%^&*()\-_]{2,}/) == null ? false :
@@ -79,4 +80,12 @@ function deleteContact(firstName, lastName) {
 }
 function getCountOfContactsInAddressBook(addressBookName) {
     return addressBookMap.get(addressBookName).length
+}
+function checkIfContactExists(firstName, lastName) {
+    for (const [key, value] of addressBookMap.entries()) {
+        let value1 = value.filter(e => e.firstName === firstName && e.lastName === lastName)
+        if (value1 != undefined)
+            return true;
+    }
+    return false;
 }
