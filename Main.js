@@ -13,6 +13,7 @@ class Person {
         this.address = address
     }
 }
+let array = []
 let firstName = process.argv[2];
 let lastName = process.argv[3];
 let city = process.argv[4];
@@ -23,18 +24,21 @@ let email = process.argv[8];
 let address = process.argv[9];
 let addressBookName = process.argv[10];
 personObject = createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address);
-if (personObject == undefined && validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address)) {
+if (personObject != undefined && validateContact(firstName, lastName, city, state, zip, phoneNumber, email, address)) {
     console.log("valid contact details");
     let contactsArray = []
     contactsArray.push(personObject)
     addressBookMap.get(addressBookName) == null ? addressBookMap.set(addressBookName, contactsArray) :
         addressBookMap.set(addressBookName, addressBookMap.get(addressBookName).push(personObject))
-
+    addressBookMap.set("add2", contactsArray)
+    console.log(addressBookMap)
 } else {
     console.log("Invalid Contact Details")
 }
 getCountOfContactsInAddressBook("add1")
+getPersonByCity("Hyd")
 editContact("Mazhar", "Ali", "Hyderabad", state, zip, phoneNumber, email, address)
+
 deleteContact("Mazhar", "Ali")
 function createAddressBook(firstName, lastName, city, state, zip, phoneNumber, email, address) {
     return checkIfContactExists(firstName, lastName) ? null :
@@ -79,6 +83,7 @@ function deleteContact(firstName, lastName) {
     }
 }
 function getCountOfContactsInAddressBook(addressBookName) {
+    console.log(addressBookMap.size)
     return addressBookMap.get(addressBookName).length
 }
 function checkIfContactExists(firstName, lastName) {
@@ -88,4 +93,14 @@ function checkIfContactExists(firstName, lastName) {
             return true;
     }
     return false;
+}
+function getPersonByCity(city) {
+    let contacts = []
+    Array.from(addressBookMap.values()).filter(k => k.filter(p => { if (p.city == city) contacts.push(p); return p.city == city }))
+    return contacts
+}
+function getPersonByState(state) {
+    let contacts = []
+    Array.from(addressBookMap.values()).filter(k => k.filter(p => { if (p.state == state) contacts.push(p); return p.state == state }))
+    return contacts
 }
